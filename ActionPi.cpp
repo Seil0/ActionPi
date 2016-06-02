@@ -37,11 +37,6 @@
 
 using namespace std;
 
-string removeSpaces(string input);
-string removeEdnl(string input);
-string removeDp(string input);
-string editFolder(string input);
-string editDatName(string input);
 string gibDateiName();
 string getFolderName();
 void videoAufnehmen();
