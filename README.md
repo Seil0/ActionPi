@@ -10,11 +10,12 @@ Used Library:http://www.uco.es/investiga/grupos/ava/node/40
 
 ### Changelog:
 
--1.01(2 June 2016):
+**1.01(2 June 2016):**
 
->Fixed Date-Bug and Code clean up
+>Fixed Date-Bug     
+>Code clean up
 
--1.0(31 May 2016): 
+**1.0(31 May 2016):** 
 
 >first publical release
 
