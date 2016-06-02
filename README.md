@@ -14,7 +14,7 @@ Used Library:http://www.uco.es/investiga/grupos/ava/node/40
 
 Fixed Date-Bug and Code clean up
 
--1.0(): 
+-1.0(31 May 2016): 
 
 first publical release
 
