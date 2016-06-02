@@ -1,6 +1,7 @@
 /*
  * ActionPi.cpp
- * 
+ * Version 1.01
+ * IT-Hardware Projekt GWS-Bühl
  * Copyright 2016  <admin@kellerkinder>
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -17,8 +18,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
- * 
- * 
+ *
+ *
  */
 #include <iostream>
 #include <stdio.h>
@@ -33,7 +34,6 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <errno.h>
-
 
 using namespace std;
 
@@ -69,14 +69,12 @@ void kontrast(int richtung);
 void saettigung(int richtung);
 void verschlusszeit(int richtung);
 
-
 void setISO ( int iso );
 void setBrightness ( unsigned int brightness );
 void setContrast ( int contrast );
 void setSaturation ( int saturation );
 void setExposureCompensation ( int val ); 
 void setShutterSpeed ( unsigned int ss );
-
 
 int getMODI();
 int getREC();
@@ -153,7 +151,7 @@ int main(int argc, char **argv)
 		}
 	}
 }
-		if(getMODI()){
+		if(getMODI()){ // Eindtellungen nur im Fotomodus
 		einstellungen();
 		einstellungErhoehen();
 		einstellungVerringern();
@@ -167,6 +165,7 @@ int main(int argc, char **argv)
 	return 0;
 }
 
+//setzt Fotoeinstellungen zurück
 void zuruecksetzten()
 {
 	if(getEx2()){
@@ -184,6 +183,7 @@ void zuruecksetzten()
 	return;
 }
 
+//öffnet Einstellungen und zeigt die verschiedenen Optionen an
 void einstellungen()
 {
 	if(getEx2()){
@@ -216,8 +216,9 @@ void einstellungen()
 		}
 	}
 	return;
-}// Ende der Einstellungen
+}
 
+//setzt die gewählte Einstellung auf den nächts höheren Wert
 void einstellungErhoehen()
 {
 	if(getEx3()){
@@ -247,6 +248,7 @@ void einstellungErhoehen()
 	return;
 }
 
+//setzt die gewählte Einstellung auf den nächts niedrigeren Wert
 void einstellungVerringern()
 {
 	if(getEx1()){
@@ -281,6 +283,7 @@ void einstellungVerringern()
 	return;
 }
 
+//Werte für ISO 100,400,600,600,800 min:100; max:800
 void iso(int richtung)
 {
 		zaehlerISO = zaehlerISO + (richtung);
@@ -315,6 +318,7 @@ void iso(int richtung)
 	
 }
 
+//Werte für Helligkeit 25,50,75,100
 void helligkeit(int richtung)
 {
 		zaehlerHelligkeit = zaehlerHelligkeit + (richtung);
@@ -348,6 +352,7 @@ void helligkeit(int richtung)
 	return;
 }
 
+//Werte für Kontrast -50,0,50,100
 void kontrast(int richtung)
 {
 		zaehlerKontrast = zaehlerKontrast + (richtung);
@@ -381,6 +386,7 @@ void kontrast(int richtung)
 	return;
 }
 
+//Werte für Sättigung -100,-75,0,50,100
 void saettigung(int richtung)
 {
 		zaehlerSaettigung = zaehlerSaettigung + (richtung);
@@ -419,6 +425,7 @@ void saettigung(int richtung)
 	return;
 }
 
+//Werte für Verschluss-/Belichtungszeit 0,5000,20000,40000,100000 kleiner = kürzere Verschlusszeit
 void verschlusszeit(int richtung)
 {
 		zaehlerVerschlusszeit = zaehlerVerschlusszeit + (richtung);
@@ -457,6 +464,7 @@ void verschlusszeit(int richtung)
 	return;
 }
 
+//wird von void zuruecksetzten() aufgerufen und setzt die Fotoeinstellungen zurück auf den Standartwert
 void setStandardWerte()
 {
 	valISO = 400;
@@ -467,85 +475,90 @@ void setStandardWerte()
 	return;
 }
 
+//startet die Videoaufnahme
 void videoAufnehmen()
 {
-	bcm2835_gpio_set(LED);
-	videoAufnahme = true;
-	system("killall raspivid");
-	system("raspivid -o vid.h264 -t 1140000 -p '0,-10,720,480' &");		//nimmt video mit 19 Minuten auf -n = nopreview -f fullscreen "-p '0,0,1280,720' für Position und Größe des Vorschau Bildes"
-	liveBildWirdAngezeigt = false;
+	bcm2835_gpio_set(LED); //schaltet LED an
+	videoAufnahme = true; // Merker für aktuelle Videoaufnahme
+	system("killall raspivid");	//beendet den Prozess raspivid (Liveausgabe)
+	system("raspivid -o vid.h264 -t 1140000 -p '0,-10,720,480' &");		//nimmt video mit 19 Minuten auf -o temporäre output Datei, -p '0,-10,1280,720' für Position und Größe des Vorschau Bildes
+	liveBildWirdAngezeigt = false;	//setzt Merker für Livebildausgabe
 	return;
 }
 
+//nimmt ein temporäres Foto im ppm Format auf
 int fotoAufnehmen()
 {
-	bcm2835_gpio_set(LED);
+	bcm2835_gpio_set(LED);	//schaltet LED an
 	system("killall raspivid");
     raspicam::RaspiCam Camera; //definiert Camera Objekt
-    //Öffnet Camera 
+	//setzt die gewählten Fotoeinstellungen
     Camera.setISO(valISO);
     Camera.setBrightness(valHelligkeit);
     Camera.setContrast(valKontrast);
     Camera.setSaturation(valSaettigung);
     Camera.setShutterSpeed(valVerschlusszeit);
-    
-    //cout<<"Öffne Kamera..."<<endl;
-     if ( !Camera.open()) {cerr<<"Error opening camera"<<endl;return -1;}
-    sleep(1); //schlafe 1 Sekunde bis Kamera stabilisiert
+
+    //Öffnet Camera 
+     if ( !Camera.open()) {cerr<<"Fehler beim öffnen der Kamera!"<<endl;return -1;}	//gibt Fehlermeldung aus sofern Kamera öffnen nicht möglich
+    sleep(1); //schlafe 1 Sekunde bis Kamera stabilisiert (ohne Pause wird das Bild rot)
     Camera.grab();	//hohle Kamera
     //reserviere Speicher
-    unsigned char *data=new unsigned char[  Camera.getImageTypeSize ( raspicam::RASPICAM_FORMAT_RGB )];	//extrahiert Bild in rgb Format
+    unsigned char *data=new unsigned char[  Camera.getImageTypeSize ( raspicam::RASPICAM_FORMAT_RGB )];	//setzt Bild Format auf RGB
     Camera.retrieve ( data,raspicam::RASPICAM_FORMAT_RGB );//aufnehmen des Bildes
-    std::ofstream outFile ("bild.ppm" ,std::ios::binary ); //speichern
+    std::ofstream outFile ("bild.ppm" ,std::ios::binary ); //speichern des temporären Bildes
     outFile<<"P6\n"<<Camera.getWidth() <<" "<<Camera.getHeight() <<" 255\n";
-    outFile.write ( ( char* ) data, Camera.getImageTypeSize ( raspicam::RASPICAM_FORMAT_RGB ) );
+    outFile.write ( ( char* ) data, Camera.getImageTypeSize ( raspicam::RASPICAM_FORMAT_RGB ) );	//speichern der zusätzlichen Parameter
     delete data;	//gibt speicher wieder frei
-    liveBildWirdAngezeigt = false;
-    convert();
-    bcm2835_gpio_clr(LED);
+    liveBildWirdAngezeigt = false;	//setzt Merker für Livebildausgabe
+    convert();	//ruft Funktion zum konvertieren des temporären Bildes auf
+    bcm2835_gpio_clr(LED);	//schaltet LED aus
     return 1;
 }
 
 void liveAusgabe ()
 {
-	liveBildWirdAngezeigt = true;
-	system("raspivid -t -0 -p '0,-10,720,480'&"); //"-p '0,0,1280,720' für Position und Größe des Vorschau Bildes"
+	liveBildWirdAngezeigt = true;	//setzt Merker für Livebildausgabe 
+	system("raspivid -t -0 -p '0,-10,720,480'&"); //-p '0,0,1280,720' für Position und Größe des Vorschau Bildes
 	return;
 }
 
+//konvertiert Video und speichert es auf USB Stick
 void videoAbspeichern()
 {
-	bcm2835_gpio_clr(LED);
-	std::string datname = gibDateiName();
-	std::string ordnerName = getFolderName();
-	pruefeNewFolder(ordnerName);
+	bcm2835_gpio_clr(LED); //schaltet LED aus
+	std::string datname = gibDateiName();	//holen des Dateinamen
+	std::string ordnerName = getFolderName();	//holen des Ordnernamen
+	pruefeNewFolder(ordnerName);	//prüfen ob Ordner bereits existiert
 	std::string cmd_line = std::string() + " sudo MP4Box -fps 30 -add vid.h264 /media/usb0/DCIM/"+ordnerName+"/""\"" +datname+"\".mp4 ";	//Befehl zu packen von video in .mp4 container
 	system( cmd_line.c_str() );	//ruft pack befehl auf
 	system("killall raspivid");//beendet video aufnahme
 	system("rm vid.h264");	//löscht temporäre vid.h264 video datei
-	videoAufnahme = false;
-	liveBildWirdAngezeigt = false;
-	blinken();
+	videoAufnahme = false;	//Merker für Videoaufnahme
+	liveBildWirdAngezeigt = false;//setzt Merker für Livebildausgabe
+	blinken();	//lässt LED blinken
 	return;
 }
 
+//konvertiert Foto und speichert es auf USB Stick
 void convert(){
 	cout << "Speichern von Bild ..." << endl;
-	std::string datname =  gibDateiName();
-	std::string ordnerName = getFolderName();
+	std::string datname =  gibDateiName();	//holen des Dateinamen
+	std::string ordnerName = getFolderName();	//holen des Ordnernamen
 	pruefeNewFolder(ordnerName);
-	std::string comand = "convert bild.ppm /media/usb0/DCIM/"+ordnerName+ "/" + datname + ".jpg";
-	const char *cComand = comand.c_str();
-	system(cComand);
-	std::string pfad = "fbi --noverbose -T 1 /media/usb0/DCIM/"+ordnerName+ "/" + datname + ".jpg &/";
-	system("rm bild.ppm");
+	std::string comand = "convert bild.ppm /media/usb0/DCIM/"+ordnerName+ "/" + datname + ".jpg";	//Befehl zum konverieren, Ordnername und Dateiname werden hinzugefügt
+	const char *cComand = comand.c_str();	//befehl zum ausführen in cons char 
+	system(cComand);	//ausführen des Befehls
+	std::string pfad = "fbi --noverbose -T 1 /media/usb0/DCIM/"+ordnerName+ "/" + datname + ".jpg &/";	//Befehl zum anzeigen das fertigen Bildes
+	system("rm bild.ppm");	//löschen des temporären Bildes
 	rueckschau(pfad);
-	sleep(4);
-	system("killall fbi");
+	sleep(4);	//für 4 Sekunden
+	system("killall fbi");	//beendet Anzeigen des Bildes
 	cout << "Abspeichern fertig" << endl;
 	return;
 }
 
+//anzeigen des fertigen Bildes
 void rueckschau(string input)
 {
 	const char *cComand = input.c_str();
@@ -554,46 +567,42 @@ void rueckschau(string input)
 	
 }
 
+//erstellt den Dateinamen aus der auktuellen Uhrzeit
 string gibDateiName()
 {
-	std::time_t t = std::time(0);
-	char *ti = ctime(&t);
-	std::string datname = std::string() + ti + "ctionPi";
-	datname = removeSpaces(datname);
-	datname = removeDp(datname);
-	datname = removeEdnl(datname);
-	datname = editDatName(datname);
-	return datname;
+	time_t t = time(0);	
+	struct tm *aT = localtime(&t);	//holen der aktuellen Zeit
+	int istd = aT->tm_hour;	//holen der Stunden
+	int imin = aT->tm_min;	//holen der Minuten
+	int isec = aT->tm_sec;	//holen der Sekunden
+	std::string sstd = to_string(istd);	//in String konvertieren
+	std::string smin = to_string(imin);
+	std::string ssec = to_string(isec);
+	std::string datName = sstd + "-" + smin + "-" + ssec + "ActionPi";	//zu einem String zusammenfügen
+	return datName;
 }
 
-string editDatName(string input)
-{
-	input.erase(0,8);
-	input.erase(6,4);
-	input.insert(2,"-");
-	input.insert(5,"-");
-	return input;
-}
-
+//erstellen des neuen Ordners
 void creatNewFolder()
 {
-	std::string folderName = getFolderName();
-	std::string pfad = "/media/usb0/DCIM/" + folderName;
-	bool exists = ordnerExistiert(pfad);
-	if(exists == false)
+	std::string folderName = getFolderName();	//holen des Ordnernamen
+	std::string pfad = "/media/usb0/DCIM/" + folderName;	//Pafd des Ordners
+	bool exists = ordnerExistiert(pfad);	//prüfen ob Ordner existiert
+	if(exists == false)	//wenn nein dann neuen Ordner erstellen
 	{
-		std::string comand = "mkdir " + pfad + "";
+		std::string comand = "mkdir " + pfad + "";	//Befehl zum erstellen des Ordners
 		const char *cComand = comand.c_str();
 		system(cComand);
 		cout << "Ordner erstellt." << endl;
 	}
-	else
+	else //falls Ordner bereits vorhanden
 	{
 		cout << "Ordner existiert bereits." << endl;
 	}
 	return;
 }
 
+//erstellen des DCIM Ordners 
 void creatDCIM()
 {
 	std::string dcmiPfad = "/media/usb0/DCIM";
@@ -610,20 +619,22 @@ void creatDCIM()
 	}
 }
 
+//prüft ob Ordner/DCIM bereits existiert
 bool ordnerExistiert(string pfad)
 {
 	const char *cPfad = pfad.c_str();
-	DIR *pDir;
+	DIR *pDir;	//Verzeichniss wird auf aktuellen Pfad gesetzt
 	bool oExists = false;
-	pDir = opendir(cPfad);
-	if(pDir != NULL)
+	pDir = opendir(cPfad);	//öffnen des Pfades
+	if(pDir != NULL)	//falls Ordner unter dem aktuellen Pfad vorhanden pDIR ungleich NULL
 	{
 	oExists = true;
-	closedir(pDir);
+	closedir(pDir);		//schließen des Ordners
 	}
 	return oExists; 
 }
 
+//prüft ob Ordner bereits existiert (wird gebraucht sollt die Kamera länger als 0.00 Uhr in Betrieb sein "0 Uhr Bug")
 void pruefeNewFolder(string input)
 {
 	std::string pfad = "/media/usb0/DCIM/" + input;
@@ -638,43 +649,24 @@ void pruefeNewFolder(string input)
 	return;
 }
 
+//erstellt den Ordnernamen aus der auktuellen Uhrzeit (siehe gibDateiName)
 string getFolderName()
 {
-	std::time_t t = std::time(0);
-	char *ti = ctime(&t);
-	std::string folName = std::string() + ti;
-	folName = removeSpaces(folName);
-	folName = removeDp(folName);
-	folName = removeEdnl(folName);
-	folName = editFolder(folName);
+char *wtagName[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+    char *monatName[] = { "Dec", "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov" };     
+	
+	time_t t = time(0);
+	struct tm *aT = localtime(&t);
+	int tag = aT->tm_mday;
+	int wtag = aT->tm_wday;
+	int monat = aT->tm_mon;
+	
+	std::string stag = std::to_string(tag);
+	std::string tagumonat = std::string() + wtagName[wtag] + "-" + monatName[monat];
+	std::string folName = tagumonat + "-" + stag;
 	return folName;
 }
 
-string editFolder(string input)
-{
-	input.erase(8,6);
-	input.erase(12,1);
-	input.insert(8,"-");
-	return input;
-}
-
-string removeSpaces(string input) //entfernt " "
-{ 
-  input.erase(std::remove(input.begin(),input.end(),' '),input.end());
-  return input;
-}
-
-string removeDp(string input) //entfernt ":"
-{ 
-  input.erase(std::remove(input.begin(),input.end(),':'),input.end());
-  return input;
-}
-
-string removeEdnl(string input) //entfernt endl
-{ 
-	replace(input.begin(), input.end(), '\n', 'A');
-	return input;
-}
 
 void initialisierung() 
 {		
@@ -693,6 +685,7 @@ bcm2835_gpio_set_pud(Ex3, BCM2835_GPIO_PUD_UP);  //Schalter als Öffner
  return;
 }
 
+//liest die Schalterstellung von MODI ein
 int getMODI()
 {
 	valMODI = !bcm2835_gpio_lev(MODI);
@@ -700,30 +693,35 @@ int getMODI()
 	return valMODI;
 }
 
+//liest die Schalterstellung von REC ein
 int getREC() 
 {
 	valREC = !bcm2835_gpio_lev(REC);
 	return valREC;
 }
 
+//liest die Schalterstellung von Ex1 ein
 int getEx1() 
 {
 	valEx1 = !bcm2835_gpio_lev(Ex1);
 	return valEx1;
 }
 
+//liest die Schalterstellung von Ex2 ein
 int getEx2() 
 {
 	valEx2 = !bcm2835_gpio_lev(Ex2);
 	return valEx2;
 }
 
+//liest die Schalterstellung von Ex3 ein
 int getEx3() 
 {
 	valEx3 = !bcm2835_gpio_lev(Ex3);
 	return valEx3;
 }
 
+//lässt die Status-LED 10 mal blinken
 void blinken()
 {
 	
@@ -737,6 +735,7 @@ void blinken()
 	return;
 }
 
+//Herunterfahren der Kamera bei gleizeitgem drücken des REC Knopfes und der mittleren Funktionstaste
 void herunterfahren()
 {
 	if(getREC() && getEx2())
@@ -749,11 +748,12 @@ void herunterfahren()
 	return;
 }
 
+//beenden des Kameraprogramms bei gleichzeitigen drücken der äußeren Funktionstasten
 void programmBeenden()
 {
 	if(getEx3() && getEx1())
 	{
-		aktiv = false;
+		aktiv = false; // Merker für while-Schleife
 		system("killall raspivid");
 	blinken();
 	}
