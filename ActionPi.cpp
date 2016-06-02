@@ -1,8 +1,8 @@
 /*
  * ActionPi.cpp
- * Version 1.01
+ * Version 1.02
  * IT-Hardware Projekt GWS-Bühl
- * Copyright 2016  <admin@kellerkinder>
+ * Copyright 2016  <admin@kellerkinder.xyz>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  *
- *
+ *zum kompilieren ---> g++ -Wall -c "%f" -l raspicam -l bcm2835 -std=c++0x
  */
 #include <iostream>
 #include <stdio.h>
