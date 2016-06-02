@@ -10,7 +10,7 @@ to build with geany add this to Build Commands: g++ -Wall -c "%f" -l raspicam -l
 
 ### Changelog:
 
-**1.01(2 June 2016):**
+**1.02(2 June 2016):**
 
 >Fixed Date-Bug     
 >Code clean up
