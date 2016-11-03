@@ -19,7 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  *
- *zum kompilieren ---> g++ -Wall -c "%f" -l raspicam -l bcm2835 -std=c++0x
+ *zum kompilieren raspbian befor 2016-09-23---> g++ -Wall -c "%f" -l raspicam -l bcm2835 -std=c++0x (not tested yet)
+ *zum kompilieren raspbian latest---> g++ -Wall -o"%e" "%f" -l raspicam -l bcm2835 -sdt=c++14
  */
 #include <iostream>
 #include <stdio.h>
@@ -31,7 +32,7 @@
 #include <fstream>
 #include <bcm2835.h>
 #include <raspicam/raspicam.h>
-#include <sys/types.h>
+#include <unisdt.h>
 #include <dirent.h>
 #include <errno.h>
 
