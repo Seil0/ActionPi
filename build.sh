@@ -40,7 +40,7 @@ echo "Do you wish to autostart the ActionPi Software?"
 echo "!WARNING! this is not tested use only if you know wath you do!"
 select yn in "Yes" "No"; do
     case $yn in
-        Yes ) sudo echo "sudo ~/ActionPi./ActionPi" /etc/rc.local; break;;
+        Yes ) sudo echo "sudo ~/ActionPi./ActionPi" > /etc/rc.local; break;;
         No ) break;;
     esac
 done
