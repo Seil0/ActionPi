@@ -37,7 +37,7 @@ cd ~/ActionPi/
 chmod +x ActionPi
 
 echo "Do you wish to autostart the ActionPi Software?"
-echo "!WARNING! this is not tested use only if you know wath you do!"
+echo "!WARNING! this is not tested use only if you know what you do!"
 select yn in "Yes" "No"; do
     case $yn in
         Yes ) sudo echo "sudo ~/ActionPi./ActionPi" > /etc/rc.local; break;;
@@ -46,7 +46,7 @@ select yn in "Yes" "No"; do
 done
 
 echo "Do you wish to add i2c configuration for real time clock?"
-echo "!WARNING! this is not tested use only if you know wath you do!"
+echo "!WARNING! this is not tested use only if you know what you do!"
 select yn in "Yes" "No"; do
     case $yn in
         Yes ) sudo i2cdetect -y 1; sudo modprobe rtc-ds1307; sudo echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device; break;;
@@ -55,7 +55,7 @@ select yn in "Yes" "No"; do
 done
 
 echo "Do you wish to deactivate dhcpcd?"
-echo "!WARNING! this is not tested use only if you know wath you do!"
+echo "!WARNING! this is not tested use only if you know what you do!"
 select yn in "Yes" "No"; do
     case $yn in
         Yes ) sudo service dhcpcd stop; sudo systemctl disable dhcpcd break;;
@@ -66,7 +66,7 @@ done
 echo "Installation completed!"
 
 echo "Would you like to reboot now (recommenden)?"
-echo "!WARNING! this is not tested use only if you know wath you do!"
+echo "!WARNING! this is not tested use only if you know what you do!"
 select yn in "Yes" "No"; do
     case $yn in
         Yes ) sudo reboot; break;;
