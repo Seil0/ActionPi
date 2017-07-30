@@ -54,7 +54,7 @@ select yn in "Yes" "No"; do
     esac
 done
 
-echo "Do you wish to deactivate dhcpcd?"
+echo "Do you wish to deactivate dhcpcd? (Not recomended)"
 echo "!WARNING! this is not tested use only if you know what you do!"
 select yn in "Yes" "No"; do
     case $yn in
