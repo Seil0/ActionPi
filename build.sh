@@ -1,6 +1,6 @@
 #!/bin/bash
 #install script ActionPi by Seil0
-#version 0.1
+#version 0.2
 echo "ActionPi install script by Seil0 version 0.1"
 
 cd ~/Downloads/
