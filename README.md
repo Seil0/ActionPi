@@ -1,3 +1,6 @@
+[![Latest](https://img.shields.io/github/release/Seil0/ActionPi/all.svg?style=flat-square)](https://github.com/Seil0ActionPi/releases)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0)
+
 # ActionPi
 
 ActionPi is an easy to use Action Camera for the Raspberry Pi.
