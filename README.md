@@ -15,4 +15,4 @@ to build with geany add this to Build Commands:
 -  `g++ -Wall -c "%f" -l raspicam -l bcm2835 -std=c++0x`   
 - if the first command doesn't work `g++ -Wall -o"%e" "%f" -l raspicam -l bcm2835 -sdt=c++14`
 
-OSI Certified Open Source Software, ActionPi © 2016-2017 Kellerkinder www.kellerkinder.xyz
+OSI Certified Open Source Software, ActionPi © 2016-2018 Kellerkinder www.kellerkinder.xyz
