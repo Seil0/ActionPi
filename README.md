@@ -4,7 +4,7 @@
 
 # ActionPi
 
-ActionPi is an easy to use Action Camera for the Raspberry Pi.
+ActionPi is an easy to use Action Camera for the Raspberry Pi. The full documentation can be found in our [wiki](https://github.com/Seil0/ActionPi/wiki).
 
 Used Librarys:     
 - http://www.uco.es/investiga/grupos/ava/node/40   
